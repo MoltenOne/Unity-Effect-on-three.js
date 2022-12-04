@@ -12,5 +12,7 @@ $ ws
 
 Используются библиотеки three.js и OrbitControls.js
 
+Комментарии к коду представлены в js/main.js
+
 ![изображение](https://user-images.githubusercontent.com/54802628/205498788-8eeaa666-4afd-4f61-882c-3c77a547db8d.png)
 
