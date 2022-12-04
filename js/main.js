@@ -67,23 +67,32 @@ let onLoad = function () {
 
 // Описание логики работы эффекта линий-пружинок (в данном случае они имеют двухмерную текстуру)
 
-	let lineGeometry = new THREE.PlaneGeometry(10, 10, 5, 5);
+
+	
+//	let lineGeometry = new THREE.PlaneGeometry(10, 10, 5, 5);
 	textures.line1Texture.anisotropy = renderer.capabilities.getMaxAnisotropy()
-    let lineMaterial = new THREE.MeshPhongMaterial({
+//    let lineMaterial = new THREE.MeshPhongMaterial({
+	  let lineMaterial = new THREE.SpriteMaterial({
     	map: textures.line1Texture,
     	transparent: true,
-    	opacity: 0,
-    	side: THREE.DoubleSide
+    	opacity: 1,
+ //   	side: THREE.DoubleSide
     });
     lineMaterial.color.r = 0.827451;
     lineMaterial.color.g = 0.2117647;
+
+
+    
+
 
 // Каждой копии линии присвоено свойство "lifeline", определяющее остальные свойства позиции, скалирования, текстуры и прозрачности
     let lineListObject = {};
 
 	for (let i = 0; i < 35;i++){
-		lineListObject["line" + i] = new THREE.Mesh(lineGeometry.clone(), lineMaterial.clone())
+	//	lineListObject["line" + i] = new THREE.Mesh(lineGeometry.clone(), lineMaterial.clone())
+		lineListObject["line" + i] = new THREE.Sprite(lineMaterial.clone());
 		lineListObject["line" + i].lifeline = (1.6*i)/35;
+		lineListObject["line" + i].rotated = 0;
 		scene.add(lineListObject["line" + i]);
 	}
 
@@ -149,8 +158,9 @@ let onLoad = function () {
 				lineListObject[lineInstance].position.z +=(lineListObject[lineInstance].position.z/150)
 			};
 // Установка расположения линий относительно нужной нам точки
-		    lineListObject[lineInstance].lookAt(0,15,0);
-	    	lineListObject[lineInstance].rotateY(Math.PI/2);
+		//    lineListObject[lineInstance].lookAt(0,15,0);
+	    //	lineListObject[lineInstance].rotateY(Math.PI/2);
+		//	lineListObject[lineInstance].material.rotation = Math.PI/2;
 	    
 	    	if (lineListObject[lineInstance].lifeline > 0.8) {
 	    		lineListObject[lineInstance].material.opacity -=0.08
@@ -170,12 +180,18 @@ let onLoad = function () {
 				   return [x,y,z];
 				}
 
-				let randomDot = randomSpherePoint(0,15,0,15)
+				let randomDot = randomSpherePoint(0,15,0,13)
 
 				lineListObject[lineInstance].lifeline = 0;
-				lineListObject[lineInstance].material.opacity = 0;
-				lineListObject[lineInstance].scale.x = 1;
+				lineListObject[lineInstance].material.opacity = 1;
+				lineListObject[lineInstance].scale.x = 12;
+				lineListObject[lineInstance].scale.x = 5;
 				lineListObject[lineInstance].position.set(randomDot[0], randomDot[1], randomDot[2]);
+			//	if (!lineListObject[lineInstance].rotated){
+					let v2 = new THREE.Vector2(lineListObject[lineInstance].position.x, lineListObject[lineInstance].position.y-15)
+					lineListObject[lineInstance].material.rotation = v2.angle();
+			//		lineListObject[lineInstance].rotated = 1;
+			//	}
 			}
 		}
 	};
