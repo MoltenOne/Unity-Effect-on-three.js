@@ -10,7 +10,7 @@ $ ws
 
 Затем открыть localhost:8000/
 
-Используются библиотеки three.js и OrbitControls.js
+Используются библиотека three.js и аддон OrbitControls.js
 
 Комментарии к коду представлены в js/main.js
 
