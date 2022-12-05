@@ -40,7 +40,7 @@ let onLoad = function () {
 	let circleGeometry = new THREE.CircleGeometry(5, 32);
 	let circleMaterial = new THREE.MeshPhongMaterial({
 	  		map: textures.circleTexture,
-	  		opacity: 0.2,
+	  		opacity: 0,
 	   		transparent: true,
 	   		depthTest: false
 		});
@@ -52,18 +52,17 @@ let onLoad = function () {
 
 	function makeCircle(count){
 			for (let i = 0; i < count;i++){			
-				setTimeout(function(){
 					circleListObject["circle" + i] = new THREE.Mesh(circleGeometry.clone(), circleMaterial.clone());				
 					circleListObject["circle" + i].position.set(0,15,0);
-					circleListObject["circle" + i].scale.set(0.2,0.2,0.2);
+					circleListObject["circle" + i].scale.set(0,0,0);
 					circleListObject["circle" + i].renderOrder = 1;
-					scene.add(circleListObject["circle" + i]);
-				},200*(i+1))
-				
+					circleListObject["circle" + i].positionProp = i;
+					circleListObject["circle" + i].animated = 0;
+					scene.add(circleListObject["circle" + i]);			
 			}
 	}
 
-	 setTimeout(function(){makeCircle(4)},500);
+	 makeCircle(5);
 
 // Описание логики работы эффекта линий-пружинок (в данном случае они имеют двухмерную текстуру)
 
@@ -86,7 +85,7 @@ let onLoad = function () {
 		lineListObject["line" + i].lifeline = (1.6*i)/35;
 		scene.add(lineListObject["line" + i]);
 	}
-
+		let startTime = Date.now();
 // Динамичные повторяющиеся эффекты
 	function animate() {
 		requestAnimationFrame( animate );
@@ -95,18 +94,23 @@ let onLoad = function () {
 
 	        spotLight.position.copy(camera.position);
 	 
-
 		renderer.render( scene, camera );
 
-		for (let circleInstance in circleListObject) {
-			circleListObject[circleInstance].scale.x +=0.06;
-			circleListObject[circleInstance].scale.y +=0.06;
-			circleListObject[circleInstance].scale.z +=0.06;
 
-			if (circleListObject[circleInstance].scale.x < 1) circleListObject[circleInstance].material.opacity+=0.015;
+		let currentTime = Date.now();
+
+		for (let circleInstance in circleListObject) {
+//	 Теперь размер каждого круга фиксированно связан с временем
+			circleListObject[circleInstance].scale.set(
+				(((currentTime - startTime) + circleListObject[circleInstance].positionProp*200)%1000)/200,
+				(((currentTime - startTime) + circleListObject[circleInstance].positionProp*200)%1000)/200,
+				(((currentTime - startTime) + circleListObject[circleInstance].positionProp*200)%1000)/200
+			)
+
+			if (circleListObject[circleInstance].scale.x > 0 && circleListObject[circleInstance].scale.x < 1) circleListObject[circleInstance].material.opacity+=0.02;
 			if (circleListObject[circleInstance].scale.x > 2) circleListObject[circleInstance].material.opacity-=0.04;
-			if (circleListObject[circleInstance].scale.x > 3)  {
-					circleListObject[circleInstance].scale.set(0.2,0.2,0.2);
+			if (circleListObject[circleInstance].scale.x >= 3)  {
+					circleListObject[circleInstance].scale.set(0,0,0);
 					circleListObject[circleInstance].material.opacity = 0.2;
 			}
 			circleListObject[circleInstance].lookAt(camera.position);			
