@@ -57,7 +57,6 @@ let onLoad = function () {
 					circleListObject["circle" + i].scale.set(0,0,0);
 					circleListObject["circle" + i].renderOrder = 1;
 					circleListObject["circle" + i].positionProp = i;
-					circleListObject["circle" + i].animated = 0;
 					scene.add(circleListObject["circle" + i]);			
 			}
 	}
